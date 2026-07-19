@@ -1,72 +1,181 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#08131f">
-  <title>MonticellOPS — Mission 001</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=3">
-
-  <script>
-    (async function () {
-      try {
-        const cleanupKey = "monticellops_cleanup_v1";
-        if (!sessionStorage.getItem(cleanupKey)) {
-          sessionStorage.setItem(cleanupKey, "done");
-
-          if ("serviceWorker" in navigator) {
-            const registrations = await navigator.serviceWorker.getRegistrations();
-            await Promise.all(registrations.map(registration => registration.unregister()));
-          }
-
-          if ("caches" in window) {
-            const cacheNames = await caches.keys();
-            await Promise.all(cacheNames.map(name => caches.delete(name)));
-          }
-
-          const url = new URL(window.location.href);
-          url.searchParams.set("fresh", Date.now().toString());
-          window.location.replace(url.toString());
-          return;
-        }
-      } catch (error) {
-        console.warn("Legacy cache cleanup could not complete:", error);
-      }
-    })();
-  </script>
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#10161d" />
+  <title>mission 2 | monticellOPS</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app">
-    <header class="masthead">
-      <div class="brand">MONTICELLOPS</div>
-      <div class="mission-id">MISSION 001 · FIELD RELEASE 3</div>
-    </header>
+  <header class="topbar">
+    <div>
+      <div class="brand">monticell<span>OPS</span></div>
+      <div class="mission-label">mission 2 · financial feasibility</div>
+    </div>
+    <button id="menuBtn" class="ghost compact" aria-expanded="false">menu</button>
+  </header>
 
-    <main id="screen" class="card" aria-live="polite"></main>
-  </div>
+  <nav id="nav" class="nav hidden" aria-label="Mission navigation">
+    <button data-view="intake" class="active">guided intake</button>
+    <button data-view="concerns">feasibility map</button>
+    <button data-view="register">knowns & assumptions</button>
+    <button data-view="evidence">evidence inbox</button>
+    <button data-view="package">lender package</button>
+    <button data-view="backup">backup</button>
+  </nav>
 
-  <button class="reset-link fixed-reset" id="resetButton" type="button">
-    Reset mission
-  </button>
+  <main>
+    <section class="hero card">
+      <div>
+        <p class="eyebrow">mission objective</p>
+        <h1>Replace uncertainty with evidence.</h1>
+        <p>Determine whether the project is financially and practically feasible while building the package needed for lender review.</p>
+      </div>
+      <div class="save-panel">
+        <span id="saveDot" class="status-dot"></span>
+        <div>
+          <strong id="saveState">saved locally</strong>
+          <small id="lastSaved">No responses yet</small>
+        </div>
+      </div>
+    </section>
 
-  <script src="mission-data.js?v=3"></script>
-  <script src="app.js?v=3"></script>
+    <section id="intake" class="view active-view">
+      <div class="card intro-card" id="intakeIntro">
+        <p class="eyebrow">guided discovery</p>
+        <h2>Let’s determine whether this project is possible.</h2>
+        <p>Work through one question at a time. You can answer now, mark the answer as an assumption, or move forward without an answer. Skipped questions become visible unknowns rather than blocking progress.</p>
+        <button id="beginBtn" class="primary">begin mission 2</button>
+      </div>
 
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", async () => {
-        try {
-          await navigator.serviceWorker.register("./service-worker.js?cleanup=3", { scope: "./" });
-        } catch (error) {
-          console.warn("Service-worker cleanup registration failed:", error);
-        }
-      });
-    }
-  </script>
+      <div class="card question-card hidden" id="questionCard">
+        <div class="question-header">
+          <div>
+            <p class="eyebrow" id="questionSection"></p>
+            <h2 id="questionText"></h2>
+          </div>
+          <div class="question-count" id="questionCount"></div>
+        </div>
+        <p id="questionHelp" class="help"></p>
+        <div id="answerArea"></div>
+        <div class="classification">
+          <label>How should this answer be treated?</label>
+          <div class="segmented">
+            <button type="button" data-state="known">known</button>
+            <button type="button" data-state="assumption">assumption</button>
+            <button type="button" data-state="unknown">unknown</button>
+          </div>
+        </div>
+        <div class="question-actions">
+          <button id="backBtn" class="ghost">back</button>
+          <button id="skipBtn" class="ghost">I don’t know yet</button>
+          <button id="saveNextBtn" class="primary">save & continue</button>
+        </div>
+      </div>
 
+      <div class="card hidden" id="intakeComplete">
+        <p class="eyebrow">intake pass complete</p>
+        <h2>You can keep refining the evidence.</h2>
+        <p>No answer is locked. Return to any section, add documents, or revise assumptions as new information arrives.</p>
+        <button id="reviewBtn" class="primary">review feasibility map</button>
+      </div>
+    </section>
+
+    <section id="concerns" class="view">
+      <div class="section-heading">
+        <div><p class="eyebrow">family-facing view</p><h2>Feasibility map</h2></div>
+        <p>Each concern shows what is supported, assumed, and unresolved.</p>
+      </div>
+      <div id="concernGrid" class="grid concern-grid"></div>
+    </section>
+
+    <section id="register" class="view">
+      <div class="section-heading">
+        <div><p class="eyebrow">certainty register</p><h2>Knowns, assumptions & unknowns</h2></div>
+        <button id="addItemBtn" class="primary compact">add item</button>
+      </div>
+      <div class="summary-row" id="registerSummary"></div>
+      <div class="card table-wrap">
+        <table>
+          <thead><tr><th>item</th><th>state</th><th>impact</th><th>concern</th><th>answer / note</th><th></th></tr></thead>
+          <tbody id="registerBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="evidence" class="view">
+      <div class="section-heading">
+        <div><p class="eyebrow">supporting information</p><h2>Evidence inbox</h2></div>
+        <button id="addEvidenceBtn" class="primary compact">add document record</button>
+      </div>
+      <div class="notice">Local file selection records the file name only. The actual file remains on your device and is not uploaded to GitHub or retained by this page.</div>
+      <div id="evidenceList" class="stack"></div>
+    </section>
+
+    <section id="package" class="view">
+      <div class="section-heading">
+        <div><p class="eyebrow">approval preparation</p><h2>Lender package</h2></div>
+        <div id="packagePercent" class="big-number">0%</div>
+      </div>
+      <div id="packageList" class="stack"></div>
+    </section>
+
+    <section id="backup" class="view">
+      <div class="section-heading"><div><p class="eyebrow">data protection</p><h2>Backup</h2></div></div>
+      <div class="grid backup-grid">
+        <div class="card">
+          <h3>Backup health</h3>
+          <div id="backupHealth" class="health local">local only</div>
+          <p id="backupMessage">Your responses are automatically saved in this browser on this device.</p>
+          <dl>
+            <div><dt>last local save</dt><dd id="backupLocal">—</dd></div>
+            <div><dt>last downloaded backup</dt><dd id="backupDownload">never</dd></div>
+            <div><dt>last server backup</dt><dd>not connected</dd></div>
+          </dl>
+        </div>
+        <div class="card action-card">
+          <h3>Protect your progress</h3>
+          <button id="exportBtn" class="primary">download mission backup</button>
+          <label class="file-button">import mission backup<input id="importInput" type="file" accept="application/json" /></label>
+          <button id="serverBtn" class="ghost">upload backup to server</button>
+          <small>Secure server backup is reserved in the interface but is not connected in this version.</small>
+        </div>
+        <div class="card danger-card">
+          <h3>Clear local mission data</h3>
+          <p>This removes Mission 2 answers from this browser only.</p>
+          <button id="clearBtn" class="danger">clear local data</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="itemDialog">
+    <form method="dialog" id="itemForm">
+      <h2 id="dialogTitle">Add item</h2>
+      <input type="hidden" id="itemId" />
+      <label>Item<input id="itemTitle" required /></label>
+      <label>State<select id="itemState"><option value="known">Known</option><option value="assumption">Assumption</option><option value="unknown">Unknown</option></select></label>
+      <label>Impact<select id="itemImpact"><option value="critical">Critical</option><option value="important">Important</option><option value="minor">Minor</option></select></label>
+      <label>Concern<select id="itemConcern"></select></label>
+      <label>Answer or note<textarea id="itemNote" rows="4"></textarea></label>
+      <div class="dialog-actions"><button value="cancel" class="ghost">cancel</button><button id="itemSave" value="default" class="primary">save</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="evidenceDialog">
+    <form method="dialog" id="evidenceForm">
+      <h2>Add document record</h2>
+      <label>Document name<input id="evidenceName" required /></label>
+      <label>Status<select id="evidenceStatus"><option value="requested">Requested</option><option value="available">Available</option><option value="linked">Linked</option><option value="reviewed">Reviewed</option></select></label>
+      <label>Select local file<input id="evidenceFile" type="file" /></label>
+      <label>Secure link, if available<input id="evidenceLink" type="url" placeholder="https://" /></label>
+      <label>Notes<textarea id="evidenceNote" rows="3"></textarea></label>
+      <div class="dialog-actions"><button value="cancel" class="ghost">cancel</button><button id="evidenceSave" value="default" class="primary">save record</button></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js"></script>
 </body>
 </html>
