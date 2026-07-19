@@ -1,29 +1,30 @@
-# MonticellOPS — Field Release
+# MonticellOPS — Complete Field Release 2
 
-This folder is the complete, self-contained GitHub Pages release.
+This is the complete clean release for an empty GitHub repository.
 
-Upload all files directly to the repository root.
+## Why this release exists
 
-Files included:
-- index.html
-- styles.css
-- app.js
-- mission-data.js
-- manifest.webmanifest
-- icon.svg
-- icon-192.png
-- icon-512.png
-- apple-touch-icon.png
-- README.md
-- V4_SCOPE_NOTE.md
+The earlier V3 service worker can remain installed in a browser even after its file is deleted from GitHub. That installed worker can continue serving the old V3 application.
 
-No service-worker file is used in this release. That is intentional, so an older cached application cannot take control of the page.
+This release includes an inline startup cleanup that:
 
-GitHub Pages:
+1. unregisters all previously installed service workers for this site,
+2. deletes all Cache Storage entries for this site,
+3. reloads once with a fresh URL,
+4. then runs the current field release.
+
+## Upload
+
+Upload every file in this ZIP directly to the repository root.
+
+No `sw.js` or `service-worker.js` file should exist.
+
+## GitHub Pages
+
 - Source: Deploy from a branch
 - Branch: main
 - Folder: /(root)
 
-After publishing, open the site once with `?reset=1` appended to the URL.
+After deployment, open the normal published URL. The first load may refresh itself once. That is expected.
 
-The visible Reset mission control remains fixed at the bottom of every app screen.
+The Reset mission button remains fixed at the bottom of every application screen.
