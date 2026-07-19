@@ -1,13 +1,13 @@
-# MonticellOPS Revision 3
+# MonticellOPS — Mission 001 — Revision 4
 
-Upload every file in this package into the GitHub repository root and commit the changes. Replace files with matching names.
+Revision 4 is a deliberately narrow field-test version for today's Lot 2 photography. It is not intended to define the final product.
 
-GitHub Pages remains:
-- Branch: main
-- Folder: /(root)
+Key changes:
+- Short, focused screens.
+- Each objective unfolds through why, capture, and check moments.
+- Commander and Recon Ops are fluid roles.
+- A visible Reset mission link appears below every screen.
+- Reset returns to the original welcome screen and clears V4 progress.
+- V4 uses its own local-storage key.
 
-After publication, refresh the live browser page. If the Home Screen app still shows Revision 1, remove its icon, reopen the live site, verify the header says MISSION 001 · REV 3, and add it to the Home Screen again.
-
-
-## Revision 3 focus
-The engineering requirements are unchanged. Commander-facing language now uses professional general-public wording, explains unfamiliar ideas in context, and avoids unnecessary technical vocabulary.
+Upload all files to the GitHub Pages repository root and replace matching files.
