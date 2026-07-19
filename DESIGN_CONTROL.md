@@ -28,3 +28,7 @@ Objective 1 establishes Reference A at the northeast corner of Lot 2, where the 
 
 ## Progress and debrief
 Progress emphasizes Current Objective and Next Objective, not productivity statistics. Completion unlocks capabilities. Debrief summarizes uncertainty reduced, capabilities established, unresolved constraints, and whether the mission felt calm and self-explanatory.
+
+
+## Communication standard added in Revision 3
+The app addresses the Mission Commander as a capable adult who may not have prior engineering vocabulary. Prefer familiar professional language, explain unfamiliar concepts where they become useful, connect instructions to purpose, and preserve technical rigor in the underlying requirements.
