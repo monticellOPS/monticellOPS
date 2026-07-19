@@ -1,30 +1,24 @@
-# MonticellOPS — Complete Field Release 2
+# MonticellOPS — Field Release 3
 
-This is the complete clean release for an empty GitHub repository.
+This release includes the missing piece needed to escape the old Revision 3 service worker.
 
-## Why this release exists
+The old cached V3 page can intercept the request before the new `index.html` runs. Therefore,
+cleanup code inside the new page alone cannot solve the problem.
 
-The earlier V3 service worker can remain installed in a browser even after its file is deleted from GitHub. That installed worker can continue serving the old V3 application.
+This package publishes replacement files at both possible legacy worker paths:
 
-This release includes an inline startup cleanup that:
+- `service-worker.js`
+- `sw.js`
 
-1. unregisters all previously installed service workers for this site,
-2. deletes all Cache Storage entries for this site,
-3. reloads once with a fresh URL,
-4. then runs the current field release.
+When the browser performs its normal service-worker update check, the replacement worker:
 
-## Upload
+1. activates immediately,
+2. deletes every cache for this site,
+3. unregisters itself,
+4. reloads every open MonticellOPS page from the network.
 
-Upload every file in this ZIP directly to the repository root.
+Upload every file in this package to the repository root, including both worker files.
+Do not delete the worker files until the old V3 page has disappeared from all devices.
 
-No `sw.js` or `service-worker.js` file should exist.
-
-## GitHub Pages
-
-- Source: Deploy from a branch
-- Branch: main
-- Folder: /(root)
-
-After deployment, open the normal published URL. The first load may refresh itself once. That is expected.
-
-The Reset mission button remains fixed at the bottom of every application screen.
+The first visit may reload itself once or twice. After the page displays
+`MISSION 001 · FIELD RELEASE 3`, the legacy worker has been displaced.
